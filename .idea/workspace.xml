@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a03d3af0-4483-4db4-ba1d-39cc83fdf008" name="Default Changelist" comment="Init">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BahnVerbindungen/control/MainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BahnVerbindungen/control/MainController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/control/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/control/MainController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -26,9 +27,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2hdxr9VveoTU9SyLxrY5T7JhNUn" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -48,10 +49,10 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Problems",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.34367815",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -100,6 +101,8 @@
       <workItem from="1718041774290" duration="774000" />
       <workItem from="1718043771191" duration="725000" />
       <workItem from="1718351914856" duration="5275000" />
+      <workItem from="1718733833378" duration="2796000" />
+      <workItem from="1718736672142" duration="708000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1718040811892</created>

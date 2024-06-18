@@ -1,9 +1,6 @@
 package control;
 
-import model.Edge;
-import model.Graph;
-import model.List;
-import model.Vertex;
+import model.*;
 
 import java.util.Objects;
 
@@ -68,7 +65,6 @@ public class MainController {
      * @return
      */
     public String[] getTrainNetwork() {
-        //COMPLETE 06: String-Array mit allen Stationennamen erstellen.
         if (trainNetwork.isEmpty()) {
             return null;
         }
@@ -89,7 +85,6 @@ public class MainController {
      * @return
      */
     public String[] getAllConnectedStationsFrom(String name) {
-        //COMPLETE 09: Verbundene Stationen einer Station als String-Array erstellen.
         Vertex station = trainNetwork.getVertex(name);
         List<Vertex> connectedStations = trainNetwork.getNeighbours(station);
         if (connectedStations.isEmpty()) {
@@ -119,10 +114,11 @@ public class MainController {
             return -1;
         }
         String[] connectedStations = getAllConnectedStationsFrom(name);
+        double allVerticesCount = countList(trainNetwork.getVertices()) - 1;
+
         if (connectedStations == null) {
             return 0;
         }
-        double allVerticesCount = countList(trainNetwork.getVertices()) - 1;
         if (allVerticesCount == 0) {
             return 1;
         }
@@ -138,7 +134,6 @@ public class MainController {
      * @return true, falls eine neue Verbindung entstanden ist, ansonsten false.
      */
     public boolean connect(String name01, String name02, int weight) {
-        //COMPLETE 08: Verbindung bauen.
         Vertex vertex1 = trainNetwork.getVertex(name01);
         Vertex vertex2 = trainNetwork.getVertex(name02);
         if (vertex1 != null && vertex2 != null && trainNetwork.getEdge(vertex1, vertex2) == null) {
@@ -156,7 +151,6 @@ public class MainController {
      * @return true, falls ihre Verbindung entfernt wurde, ansonsten false.
      */
     public boolean disconnect(String name01, String name02) {
-        //COMPLETE 11: Freundschaften beenden.
         Vertex vertex1 = trainNetwork.getVertex(name01);
         Vertex vertex2 = trainNetwork.getVertex(name02);
         if (vertex1 == null && vertex2 == null) {
@@ -178,11 +172,11 @@ public class MainController {
      */
     public double dense() {
         //COMPLETE 12: Dichte berechnen.
+        if(trainNetwork.getVertices() == null)
+            return -1;
         int edgeCount = countList(trainNetwork.getEdges());
-        int possibleConnections = sum(countList(trainNetwork.getVertices()) - 1);
-        if (possibleConnections <= 0) {
-            return 0;
-        }
+        int verticeCount = countList(trainNetwork.getVertices()) - 1;
+        int possibleConnections = (verticeCount*(verticeCount+1))/2;
         return (double) edgeCount / possibleConnections;
     }
 
@@ -197,32 +191,36 @@ public class MainController {
     public String[] getLinksBetween(String name01, String name02) {
         Vertex station01 = trainNetwork.getVertex(name01);
         Vertex station02 = trainNetwork.getVertex(name02);
-        if (station01 != null && station02 != null) {
-            //TODO 13: Schreibe einen Algorithmus, der mindestens eine Verbindung von einer Station (über ggf. Zwischenstationen) zu einer anderen Station bestimmt. Happy Kopfzerbrechen!
-            trainNetwork.setAllVertexMarks(false);
-            return getLinksRec(name02, station01).split(",");
+        if (station01 == null || station02 == null) {
+            return null;
         }
+
+        trainNetwork.setAllVertexMarks(false);
+        Queue<String> queue = new Queue<>();
+        queue.enqueue(station01.getID());
+        station01.setMark(true);
+
+        while(!queue.isEmpty()) {
+            String[] pathArray = queue.front().split(",");
+            Vertex currentVertex = trainNetwork.getVertex(pathArray[pathArray.length - 1]);
+            if (currentVertex.getID().equals(name02)) {
+                return pathArray;
+            }
+
+            List<Vertex> neighbours = trainNetwork.getNeighbours(currentVertex);
+            neighbours.toFirst();
+            while (neighbours.hasAccess()) {
+                if(!neighbours.getContent().isMarked())queue.enqueue(queue.front() + "," + neighbours.getContent().getID());
+                neighbours.getContent().setMark(true);
+                neighbours.next();
+            }
+            queue.dequeue();
+        }
+
+
         return null;
     }
 
-    private String getLinksRec(String destination, Vertex vertex) {
-        vertex.setMark(true);
-        List<Vertex> vertices = trainNetwork.getNeighbours(vertex);
-        vertices.toFirst();
-        while (vertices.hasAccess()) {
-            if (vertices.getContent().getID().equals(destination)) {
-                return vertex.getID() + "," + destination;
-            }
-            if (!vertices.getContent().isMarked()) {
-                String path = getLinksRec(destination, vertices.getContent());
-                if (!path.isEmpty()) {
-                    return vertex.getID() + "," + path;
-                }
-            }
-            vertices.next();
-        }
-        return "";
-    }
 
     /**
      * Gibt eine kürzeste Verbindung zwischen zwei Stationen des Netzwerkes als String-Array zurück,
@@ -249,10 +247,6 @@ public class MainController {
             list.next();
         }
         return count;
-    }
-
-    private int sum(int i) {
-        return (i * (i + 1)) / 2;
     }
 
 }
