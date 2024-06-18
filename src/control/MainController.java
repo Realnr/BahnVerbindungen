@@ -119,7 +119,7 @@ public class MainController {
         if (connectedStations == null) {
             return 0;
         }
-        if (allVerticesCount == 0) {
+        if (allVerticesCount == 0) { // wenn es nur 1 Knoten gibt 
             return 1;
         }
         return (double) connectedStations.length / allVerticesCount;
