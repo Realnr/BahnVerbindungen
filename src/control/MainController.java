@@ -211,9 +211,9 @@ public class MainController {
             neighbours.toFirst();
             while (neighbours.hasAccess()) {
                 if(!neighbours.getContent().isMarked())queue.enqueue(queue.front() + "," + neighbours.getContent().getID());
-                neighbours.getContent().setMark(true);
                 neighbours.next();
             }
+            currentVertex.setMark(true);
             queue.dequeue();
         }
 
@@ -233,10 +233,77 @@ public class MainController {
     public String[] shortestPath(String name01, String name02) {
         Vertex station01 = trainNetwork.getVertex(name01);
         Vertex station02 = trainNetwork.getVertex(name02);
-        if (station01 != null && station02 != null) {
-            //TODO 14: Schreibe einen Algorithmus, der die kürzeste Verbindung zwischen den Stationen name01 und name02 als String-Array zurückgibt. Beachte die Kantengewichte!
+        if (station01 == null || station02 == null) {
+            return null;
         }
+
+        trainNetwork.setAllVertexMarks(false);
+        Queue<String> queue = new Queue<>();
+        queue.enqueue(station01.getID());
+        station01.setMark(true);
+
+        while(!queue.isEmpty()) {
+            String[] pathArray = queue.front().split(",");
+            Vertex currentVertex = trainNetwork.getVertex(pathArray[pathArray.length - 1]);
+            if (currentVertex.getID().equals(name02)) {
+                return pathArray;
+            }
+
+            List<Vertex> neighbours = trainNetwork.getNeighbours(currentVertex);
+            neighbours.toFirst();
+            while (neighbours.hasAccess()) {
+                if(!neighbours.getContent().isMarked())queue.enqueue(queue.front() + "," + neighbours.getContent().getID());
+                neighbours.next();
+            }
+            currentVertex.setMark(true);
+            queue.dequeue();
+            sortQueue(queue);
+        }
+
+
         return null;
+    }
+
+    private Queue<String> sortQueue(Queue<String> queue){
+
+        List<String> helpList = new List<>();
+        helpList.insert(queue.front());
+        queue.dequeue();
+
+
+        while (!queue.isEmpty()) {
+            double pathWeight = getPathWeight(queue.front());
+
+            helpList.toFirst();
+            while (helpList.hasAccess()) {
+                if (pathWeight < getPathWeight(helpList.getContent())) {
+                    helpList.insert(queue.front());
+                    break;
+                }
+                helpList.next();
+                if (!helpList.hasAccess()) helpList.append(queue.front());
+            }
+
+            queue.dequeue();
+        }
+
+        helpList.toFirst();
+        while(helpList.hasAccess()){
+            queue.enqueue(helpList.getContent());
+            helpList.next();
+        }
+
+        return queue;
+    }
+    private double getPathWeight(String string){
+        String[] pathArray = string.split(",");
+        double pathWeight = 0;
+        for (int i = 0; i < pathArray.length - 1; i++) {
+            Vertex vertex01 = trainNetwork.getVertex(pathArray[i]);
+            Vertex vertex02 = trainNetwork.getVertex(pathArray[i+1]);
+            pathWeight+= trainNetwork.getEdge(vertex01,vertex02).getWeight();
+        }
+        return pathWeight;
     }
 
     private int countList(List list) {
